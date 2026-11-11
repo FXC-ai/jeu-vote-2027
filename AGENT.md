@@ -1,0 +1,1 @@
+Interdiction formelle de modifier quoique ce soit dans ce projet sans l'autorisation explicit donné par la phrase : "Tu peux coder."
