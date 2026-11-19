@@ -1,0 +1,17 @@
+services:
+  nginx:
+    image: nginx:stable-alpine
+    container_name: jeu-vote-nginx
+    restart: unless-stopped
+
+    security_opt:
+      - no-new-privileges:true
+
+    ports:
+      - "8080:80"
+      - "8443:443"
+
+    volumes:
+      - ./proto-llm:/usr/share/nginx/html:ro
+      - ./nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./certs:/etc/nginx/certs:ro
