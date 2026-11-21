@@ -27,8 +27,6 @@ services:
       args:
         WWW_USER: "${HOST_UID:-1000}"
         WWW_GROUP: "${HOST_GID:-1000}"
-    volumes:
-      - ./php-fpm/app:/app
     entrypoint: ["/usr/local/bin/entrypoint.sh"]
     depends_on:
       postgres:
