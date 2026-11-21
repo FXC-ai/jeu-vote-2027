@@ -29,7 +29,7 @@ services:
       postgres:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "test", "-f", "/tmp/jeu-vote-app-ready"]
+      test: ["CMD", "test", "-f", "/tmp/jeu-vote-ready"]
       interval: 2s
       timeout: 2s
       retries: 60

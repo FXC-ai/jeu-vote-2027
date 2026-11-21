@@ -3,6 +3,12 @@ set -eu
 
 rm -f /tmp/jeu-vote-ready
 
+echo "Instalation des dépendances PHP..."
+composer install
+
+echo "Instalation des dépendances JS..."
+npm ci
+
 echo "Running migrations..."
 php artisan migrate --force
 
