@@ -1,2 +1,4 @@
 certs/*
 nginx/conf.d/default-dev.conf
+php-fpm/.env
+.env
