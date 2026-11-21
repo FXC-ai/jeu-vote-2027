@@ -28,6 +28,8 @@ services:
         WWW_USER: "${HOST_UID:-1000}"
         WWW_GROUP: "${HOST_GID:-1000}"
     entrypoint: ["/usr/local/bin/entrypoint.sh"]
+    env_file:
+      - ./php-fpm/app/.env
     depends_on:
       postgres:
         condition: service_healthy

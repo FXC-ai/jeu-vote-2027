@@ -26,7 +26,7 @@ RUN ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm \
 COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
 
 # Installation du code de l'app dans le conteneur
-COPY /php-fpm/app/ /php-fpm/app
+COPY app/ /app/
 
 # Installer les scripts de démarrage hors de /app, qui est remplacé par un
 # volume en développement.
