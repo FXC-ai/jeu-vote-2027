@@ -7,6 +7,7 @@ echo "Running migrations..."
 php artisan migrate --force
 
 echo "Starting Vite..."
+npm run build
 npm run dev -- --host 0.0.0.0 &
 
 echo "Starting php-fpm..."

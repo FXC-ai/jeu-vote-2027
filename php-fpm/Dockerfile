@@ -32,9 +32,10 @@ RUN ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm \
 # Installer Composer depuis son image officielle
 COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
 
-# Installer le script de démarrage hors de /app, qui est remplacé par un
+# Installer les scripts de démarrage hors de /app, qui est remplacé par un
 # volume en développement.
 COPY --chmod=755 entrypoint-dev.sh /usr/local/bin/entrypoint-dev.sh
+COPY --chmod=755 entrypoint.sh /usr/local/bin/entrypoint.sh
 
 RUN groupadd --gid "${WWW_GROUP}" webapp \
     && useradd \
