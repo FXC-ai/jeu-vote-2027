@@ -17,5 +17,21 @@ jobs:
           key: ${{ secrets.JEU_VOTE_DEPLOY }}
           port: ${{ secrets.VPS_PORT }}
           script: |
+            set -e
+
             cd /home/debian/jeu-vote-2027
-            git pull origin main
+
+            test -f .env
+            test -f php-fpm/app/.env
+
+            git pull --ff-only origin main
+
+            sudo docker compose -f docker-compose.yml build
+
+            sudo docker compose -f docker-compose.yml down
+
+            if sudo docker volume inspect jeu-vote-2027_public-data >/dev/null 2>&1; then
+                sudo docker volume rm jeu-vote-2027_public-data
+            fi
+
+            sudo docker compose -f docker-compose.yml up --no-build -d
