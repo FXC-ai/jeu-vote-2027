@@ -16,7 +16,7 @@ services:
   php-fpm:
     build:
       context: ./php-fpm
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
       args:
         WWW_USER: "${HOST_UID:-1000}"
         WWW_GROUP: "${HOST_GID:-1000}"

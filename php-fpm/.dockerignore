@@ -1,0 +1,6 @@
+app/.env
+app/vendor
+app/node_modules
+app/public/build
+app/public/hot
+app/public/fonts-manifest.dev.json

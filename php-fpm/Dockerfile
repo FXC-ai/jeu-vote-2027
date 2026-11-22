@@ -22,20 +22,8 @@ COPY --from=node /usr/local/lib/node_modules /usr/local/lib/node_modules
 RUN ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm \
     && ln -s /usr/local/lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx
 
-
-# Installer l'extension pour postgres
-# COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
-
-# RUN install-php-extensions pdo_pgsql
-
-
 # Installer Composer depuis son image officielle
 COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
-
-# Installer les scripts de démarrage hors de /app, qui est remplacé par un
-# volume en développement.
-COPY --chmod=755 entrypoint-dev.sh /usr/local/bin/entrypoint-dev.sh
-COPY --chmod=755 entrypoint.sh /usr/local/bin/entrypoint.sh
 
 RUN groupadd --gid "${WWW_GROUP}" webapp \
     && useradd \
@@ -44,6 +32,13 @@ RUN groupadd --gid "${WWW_GROUP}" webapp \
         --create-home \
         --shell /bin/bash \
         webapp
+# Installer les scripts de démarrage hors de /app, qui est remplacé par un
+# volume en développement.
+COPY --chmod=755 entrypoint.sh /usr/local/bin/entrypoint.sh
+
+COPY --chown=webapp:webapp ./app /app
+
+RUN chown -R webapp:webapp /app
 
 USER webapp
 
