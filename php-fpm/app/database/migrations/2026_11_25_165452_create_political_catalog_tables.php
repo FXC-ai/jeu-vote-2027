@@ -49,6 +49,7 @@ return new class extends Migration
         Schema::create('proposals', function (Blueprint $table): void {
             $table->id();
             $table->foreignId('candidate_id')->constrained()->restrictOnDelete();
+            $table->foreignId('theme_id')->constrained()->restrictOnDelete();
             $table->text('text');
             $table->string('source_title');
             $table->text('source_url');
@@ -57,18 +58,10 @@ return new class extends Migration
             $table->index(['candidate_id', 'is_active']);
         });
 
-        Schema::create('proposal_theme', function (Blueprint $table): void {
-            $table->id();
-            $table->foreignId('proposal_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('theme_id')->constrained()->cascadeOnDelete();
-            $table->timestamps();
-            $table->unique(['proposal_id', 'theme_id']);
-        });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('proposal_theme');
         Schema::dropIfExists('proposals');
         Schema::dropIfExists('themes');
         Schema::dropIfExists('candidates');

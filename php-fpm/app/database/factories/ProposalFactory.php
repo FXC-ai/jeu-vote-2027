@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Candidate;
 use App\Models\Proposal;
+use App\Models\Theme;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -20,6 +21,7 @@ class ProposalFactory extends Factory
     {
         return [
             'candidate_id' => Candidate::factory(),
+            'theme_id' => Theme::factory(),
             'text' => fake()->sentence(),
             'source_title' => fake()->sentence(3),
             'source_url' => fake()->url(),

@@ -14,9 +14,12 @@ class CandidateController extends Controller
             ->where('is_active', true)
             ->with([
                 'party',
-                'activeProposals.themes' => fn ($query) => $query
-                    ->where('themes.is_active', true)
-                    ->with('generalTheme'),
+                'activeProposals' => fn ($query) => $query
+                    ->whereHas('theme', fn ($themeQuery) => $themeQuery
+                        ->where('themes.is_active', true)
+                        ->whereHas('generalTheme', fn ($generalThemeQuery) => $generalThemeQuery
+                            ->where('is_active', true)))
+                    ->with('theme.generalTheme'),
             ])
             ->orderBy('last_name')
             ->orderBy('first_name')
@@ -25,15 +28,18 @@ class CandidateController extends Controller
                 $proposalCountsByGeneralTheme = [];
 
                 foreach ($candidate->activeProposals as $proposal) {
-                    foreach ($proposal->themes as $theme) {
-                        $generalTheme = $theme->generalTheme;
-                        $proposalCountsByGeneralTheme[$generalTheme->id] ??= [
-                            'name' => $generalTheme->name,
-                            'sortOrder' => $generalTheme->sort_order,
-                            'proposalIds' => [],
-                        ];
-                        $proposalCountsByGeneralTheme[$generalTheme->id]['proposalIds'][$proposal->id] = true;
+                    $generalTheme = $proposal->theme?->generalTheme;
+
+                    if ($generalTheme === null) {
+                        continue;
                     }
+
+                    $proposalCountsByGeneralTheme[$generalTheme->id] ??= [
+                        'name' => $generalTheme->name,
+                        'sortOrder' => $generalTheme->sort_order,
+                        'count' => 0,
+                    ];
+                    $proposalCountsByGeneralTheme[$generalTheme->id]['count']++;
                 }
 
                 uasort($proposalCountsByGeneralTheme, fn (array $first, array $second): int => $first['sortOrder'] <=> $second['sortOrder']);
@@ -45,7 +51,7 @@ class CandidateController extends Controller
                     'proposalCountsByGeneralTheme' => array_values(array_map(
                         fn (array $generalTheme): array => [
                             'name' => $generalTheme['name'],
-                            'count' => count($generalTheme['proposalIds']),
+                            'count' => $generalTheme['count'],
                         ],
                         $proposalCountsByGeneralTheme,
                     )),

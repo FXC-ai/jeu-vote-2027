@@ -6,8 +6,7 @@ use Database\Factories\ThemeFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\Pivot;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Theme extends Model
 {
@@ -25,14 +24,14 @@ class Theme extends Model
         return $this->belongsTo(GeneralTheme::class);
     }
 
-    /** @return BelongsToMany<Proposal, $this, Pivot, 'pivot'> */
-    public function proposals(): BelongsToMany
+    /** @return HasMany<Proposal, $this> */
+    public function proposals(): HasMany
     {
-        return $this->belongsToMany(Proposal::class)->withTimestamps();
+        return $this->hasMany(Proposal::class);
     }
 
-    /** @return BelongsToMany<Proposal, $this, Pivot, 'pivot'> */
-    public function activeProposals(): BelongsToMany
+    /** @return HasMany<Proposal, $this> */
+    public function activeProposals(): HasMany
     {
         return $this->proposals()
             ->where('proposals.is_active', true)

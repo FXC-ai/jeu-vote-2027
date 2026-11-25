@@ -22,10 +22,9 @@ it('shows active candidates with their party and active proposal counts by gener
         'first_name' => 'Alex',
         'last_name' => 'Retiré',
     ]);
-    $activeProposal = Proposal::factory()->for($candidate)->create(['is_active' => true]);
-    $activeProposal->themes()->attach($fiscality);
-    Proposal::factory()->for($candidate)->inactive()->create()->themes()->attach($fiscality);
-    Proposal::factory()->for($inactiveCandidate)->create(['is_active' => true])->themes()->attach($fiscality);
+    $activeProposal = Proposal::factory()->for($candidate)->for($fiscality)->create();
+    Proposal::factory()->for($candidate)->for($fiscality)->inactive()->create();
+    Proposal::factory()->for($inactiveCandidate)->for($fiscality)->create();
 
     $this->get(route('candidates.index'))
         ->assertOk()
@@ -42,14 +41,14 @@ it('shows active candidates with their party and active proposal counts by gener
 it('lists active themes with active proposal counts without exposing proposals or their sources', function () {
     $generalTheme = GeneralTheme::factory()->create(['name' => 'Finances publiques']);
     $theme = Theme::factory()->for($generalTheme)->create(['name' => 'Fiscalité', 'sort_order' => 1]);
-    $proposal = Proposal::factory()->create([
+    $proposal = Proposal::factory()->for($theme)->create([
         'text' => 'Texte copié exactement depuis la source.',
         'source_url' => 'https://example.test/source-exacte',
         'is_active' => true,
     ]);
-    $proposal->themes()->attach($theme);
     $this->assertDatabaseHas('proposals', [
         'id' => $proposal->id,
+        'theme_id' => $theme->id,
         'text' => 'Texte copié exactement depuis la source.',
         'source_url' => 'https://example.test/source-exacte',
     ]);
@@ -57,7 +56,7 @@ it('lists active themes with active proposal counts without exposing proposals o
         'name' => 'Questionnaire vide',
         'sort_order' => 2,
     ]);
-    Proposal::factory()->inactive()->create()->themes()->attach($themeWithoutActiveProposals);
+    Proposal::factory()->for($themeWithoutActiveProposals)->inactive()->create();
 
     $this->get(route('questionnaires.index'))
         ->assertOk()
